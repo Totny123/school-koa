@@ -35,7 +35,13 @@ const verifyLogin = async (ctx, next) => {
 };
 
 const verifyAuth = async (ctx, next) => {
-  const { token } = ctx.query;
+  let token;
+  if (ctx.query.token) {
+    token = ctx.query.token;
+  }
+  if (ctx.headers["x-token"]) {
+    token = ctx.headers["x-token"];
+  }
   try {
     const result = jwt.verify(token, PUBLIC_KEY, {
       algorithms: ["RS256"],
