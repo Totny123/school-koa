@@ -58,7 +58,7 @@ class AdminService {
       gender,
       phone_number,
       password,
-      role_id = 1,
+      role_id = 2,
     } = data;
     const md5pwd = md5password(password);
     const statement = `INSERT INTO admin (name, fullname,gender,phone_number,password,role_id)
