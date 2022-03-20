@@ -1,14 +1,18 @@
+const jwt = require("jsonwebtoken");
+
 const {
   NAME_OR_PASSWORD_IS_EMPTY,
   PASSWORD_IS_WRONG,
   USER_IS_NOT_EXISTS,
+  TOKEN_IS_WRONG,
 } = require("../constants/error-types");
+const { PUBLIC_KEY } = require("../app/config");
 const md5password = require("../utils/password-handle");
 const { getUserByName } = require("../service/auth.service");
 
 const verifyLogin = async (ctx, next) => {
   //获取参数
-  const { name, password, type } = ctx.request.body;
+  const { username: name, password, type } = ctx.request.body;
   //判断参数是否为空
   if (!name || !password || !type) {
     const error = new Error(NAME_OR_PASSWORD_IS_EMPTY);
@@ -30,6 +34,21 @@ const verifyLogin = async (ctx, next) => {
   await next();
 };
 
+const verifyAuth = async (ctx, next) => {
+  const { token } = ctx.query;
+  try {
+    const result = jwt.verify(token, PUBLIC_KEY, {
+      algorithms: ["RS256"],
+    });
+    ctx.user = result;
+    await next();
+  } catch (err) {
+    const error = new Error(TOKEN_IS_WRONG);
+    return ctx.app.emit("error", error, ctx);
+  }
+};
+
 module.exports = {
   verifyLogin,
+  verifyAuth,
 };
