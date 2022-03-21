@@ -10,9 +10,32 @@ class AdminService {
 
   async getAdmins(query) {
     try {
-      const { currentPage, pageSize, fullname = "" } = query;
+      const { currentPage = 1, pageSize = 99999, fullname = "" } = query;
       const offset = (Number(currentPage) - 1) * Number(pageSize);
-      const statement = `SELECT *  FROM admin WHERE fullname LIKE '%${fullname}%' LIMIT ?,?;`;
+      const statement = `
+        SELECT
+          admin.id,
+          admin.name,
+          admin.password,
+          admin.fullname,
+          admin.gender,
+          admin.phone_number,
+        IF
+          (
+            COUNT( building.id ),
+            JSON_ARRAYAGG(
+            JSON_OBJECT( 'id', building.id, 'name', building.name, 'type', building.type )),
+          NULL
+          ) buildings
+        FROM
+          admin
+        LEFT JOIN building ON admin.id = building.admin_id
+        WHERE
+          admin.fullname LIKE '%${fullname}%'
+        GROUP BY
+          admin.id
+        LIMIT ?,?;
+      `;
       const statement2 = `SELECT COUNT(*) AS total  FROM admin WHERE fullname LIKE '%${fullname}%';`;
       const [result] = await conn.execute(statement, [
         String(offset),

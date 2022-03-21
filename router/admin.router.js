@@ -10,9 +10,9 @@ const {
 
 const AdminRouter = new Router({ prefix: "/admin" });
 
-AdminRouter.get("/", verifyAuth, get);
-AdminRouter.post("/", verifyAuth, delAdmin);
-AdminRouter.post("/edit", verifyAuth, editAdmin);
-AdminRouter.post("/add", verifyAuth, addAdmin);
+AdminRouter.get("/", get);
+AdminRouter.post("/", delAdmin);
+AdminRouter.post("/edit", editAdmin);
+AdminRouter.post("/add", addAdmin);
 
 module.exports = AdminRouter;
