@@ -2,6 +2,7 @@ const {
   buildingInfo,
   delBuildingById,
   addBuilding,
+  editBuilding,
 } = require("../service/building.service");
 
 class BuildingController {
@@ -21,6 +22,13 @@ class BuildingController {
     const result = await addBuilding(ctx.request.body);
     if (result) {
       ctx.body = { code: 20000, msg: "新增成功" };
+    }
+  }
+
+  async edit(ctx, next) {
+    const result = await editBuilding(ctx.request.body);
+    if (result) {
+      ctx.body = { code: 20000, msg: "编辑成功" };
     }
   }
 }

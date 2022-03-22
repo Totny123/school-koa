@@ -49,6 +49,15 @@ class BuildingService {
     const [result] = await conn.execute(statement, [name, type, admin_id]);
     return result;
   }
+
+  async editBuilding(data) {
+    const { id, name, type, admin_id } = data;
+    const statement = `
+    UPDATE building SET name = ?,type = ?,admin_id =? WHERE id=?;
+    `;
+    const [result] = await conn.execute(statement, [name, type, admin_id, id]);
+    return result;
+  }
 }
 
 module.exports = new BuildingService();
