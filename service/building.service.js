@@ -2,7 +2,7 @@ const conn = require("../app/database");
 
 class BuildingService {
   async buildingInfo(query) {
-    const { currentPage, pageSize, name = "" } = query;
+    const { currentPage = 1, pageSize = 99999, name = "" } = query;
     const offset = (currentPage - 1) * pageSize;
     const statement = `
       SELECT

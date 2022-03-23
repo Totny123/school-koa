@@ -3,6 +3,8 @@ const {
   delStuById,
   createStu,
   editStuById,
+  editStuIn,
+  editStuOut,
 } = require("../service/student.service");
 
 class StudentController {
@@ -31,6 +33,15 @@ class StudentController {
     if (result) {
       ctx.body = { code: 20000, msg: "添加成功" };
     }
+  }
+  async stuIn(ctx, next) {
+    const result = await editStuIn(ctx.request.body);
+    ctx.body = { code: 20000, msg: "入住成功" };
+  }
+
+  async stuOut(ctx, next) {
+    const result = await editStuOut(ctx.request.body);
+    ctx.body = { code: 20000, msg: "迁出成功" };
   }
 }
 

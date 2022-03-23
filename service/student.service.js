@@ -12,8 +12,9 @@ class StudentService {
     try {
       const { currentPage, pageSize, fullname = "" } = query;
       const offset = (Number(currentPage) - 1) * Number(pageSize);
-      const statement = `SELECT *  FROM student WHERE fullname LIKE '%${fullname}%' LIMIT ?,?;`;
-      const statement2 = `SELECT COUNT(*) AS total  FROM student WHERE fullname LIKE '%${fullname}%';`;
+      const statement = `SELECT student.id, student.student_id,student.name,student.password,student.fullname,student.gender,student.phone_number,
+      dormitory.dormitory_number  FROM student LEFT JOIN dormitory ON student.dormitory_id = dormitory.id WHERE fullname LIKE '%${fullname}%' LIMIT ?,?;`;
+      const statement2 = `SELECT COUNT(*) AS total  FROM student LEFT JOIN dormitory ON student.dormitory_id = dormitory.id WHERE fullname LIKE '%${fullname}%';`;
       const [result] = await conn.execute(statement, [
         String(offset),
         String(pageSize),
@@ -74,6 +75,31 @@ class StudentService {
         md5pwd,
         id,
       ]);
+      return result;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async editStuIn(data) {
+    try {
+      const { student_id, dormitory_id } = data;
+      const statement = `UPDATE student SET dormitory_id = ? WHERE id = ?;`;
+      const [result] = await conn.execute(statement, [
+        dormitory_id,
+        student_id,
+      ]);
+      return result;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async editStuOut(data) {
+    try {
+      const { student_id, dormitory_id } = data;
+      const statement = `UPDATE student SET dormitory_id = ? WHERE id = ?;`;
+      const [result] = await conn.execute(statement, [null, student_id]);
       return result;
     } catch (err) {
       console.log(err);
